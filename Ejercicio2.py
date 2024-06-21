@@ -1,7 +1,6 @@
 from Ejercicio1 import Usuario
 from Ejercicio1 import Libro
-from Ejercicio1 import libro1
-from Ejercicio1 import libro2
+
 class Bibloteca:
     def __init__(self, nombre_biblo, direccion_biblo, telefono_biblo, email_biblo, horario_atencion):
         self.nombre_biblo = nombre_biblo
@@ -12,49 +11,57 @@ class Bibloteca:
         self.libros_disponibles = []
         self.usuarios = {}
         self.prestamos = {}
-        
-        
+
+    def __str__(self):
+        return (f'Biblioteca: {self.nombre}\n'
+                f'Dirección: {self.direccion}\n'
+                f'Teléfono: {self.telefono}\n'
+                f'Email: {self.email}\n'
+                f'Horarios: {self.horarios}\n'
+                f'Libros disponibles: {len(self.libros_disponibles)}\n'
+                f'Usuarios registrados: {len(self.usuarios)}\n'
+                f'Libros prestados: {len(self.prestamos)}')
+
+    def agregar_libro(self, nombre_libro, edicion, fecha_publicacion, sinopsis):
+        nuevo_libro = Libro(nombre_libro, edicion, fecha_publicacion, sinopsis)
+        self.libros_disponibles.append(nombre_libro)
+        print(f'Libro "{nombre_libro}" agregado a la biblioteca.')
+    
     def ingresar_usuario(self, nombre_usuario, direccion_usuario, telefono_usuario, email_usuario, fecha_nacimiento_usuario):
-        if nombre_usuario not in self.usuarios: #para no ingresar nombres duplicados
+        if email_usuario in self.usuarios:
+            print(f'El usuario con el email "{email_usuario}" ya está registrado.')
+        else:
             nuevo_usuario = Usuario(nombre_usuario, direccion_usuario, telefono_usuario, email_usuario, fecha_nacimiento_usuario)
-            self.usuarios[nombre_usuario] = nuevo_usuario
-            print(f"Usuario '{nombre_usuario}' registrado correctamente.")
-        else:
-            print(f"El usuario '{nombre_usuario}' ya está registrado.")
-            
-    def ingresar_libro(self, nombre_libro, edicion, fecha_publicacion, sinopsis):
-        if nombre_libro not in self.libros_disponibles:
-            nuevo_libro = Libro(nombre_libro, edicion, fecha_publicacion, sinopsis)  
-            self.libros_disponibles[nombre_libro] = nuevo_libro
-            print(f"Libro '{nombre_libro}' registrado correctamente.")
-        else:
-            print(f"El usuario '{nombre_libro}' ya está registrado.")    
-            
-    def solicitar_libro(self, nombre_usuario, nombre_libro):
-        if nombre_usuario in self.usuarios and nombre_libro in self.libros_disponibles:
-            usuario = self.usuarios[nombre_usuario]
-            libro = Libro(nombre_libro, None, None, None)  # Crea un objeto Libro temporal para la búsqueda
-            if libro not in usuario.libro_prestado_usuario:  # Verifica si el libro está disponible para el usuario
-                print(f"El usuario {nombre_usuario} desea solicitar el libro '{nombre_libro}'.")
-                # Implementar lógica para procesar la solicitud (por ejemplo, agregar a una cola de espera, notificar al bibliotecario, etc.)
-            else:
-                print(f"El usuario {nombre_usuario} ya tiene prestado el libro '{nombre_libro}'.")
-        else:
-            if nombre_usuario not in self.usuarios:
-                print(f"El usuario '{nombre_usuario}' no está registrado en la biblioteca.")
-            elif nombre_libro not in self.libros_disponibles:
-                print(f"El libro '{nombre_libro}' no está disponible para préstamo.")
-        
-        
-            
+            self.usuarios[email_usuario] = nuevo_usuario
+            print(f'Usuario "{nombre_usuario}" registrado con éxito.')
 
-bibloteca1 = Bibloteca ("Biblioteque La Rosa", "La Rosa 547", 154236789, "biblo@larosa.com", "Lun - Vie 12:00 - 18:00")
+"""
+    def prestar_libro(self, usuario_id, libro):
+        if usuario_id not in self.usuarios:
+            print(f'El usuario con ID {usuario_id} no está registrado.')
+            return
+        if libro not in self.libros_disponibles:
+            print(f'El libro "{libro}" no está disponible.')
+            return
+        self.libros_disponibles.remove(libro)
+        self.prestamos[libro] = usuario_id
+        print(f'Libro "{libro}" prestado a usuario "{self.usuarios[usuario_id]}".')
 
-bibloteca1.ingresar_usuario("Juan Perez", "Av. Corrientes 4657", 1536690663, "juan@perez.com", "24/10/1979")
-bibloteca1.ingresar_usuario("Matias Alessandrello", "Av.Libertad 1234", 1536690663, "mati@correo.com.ar", "31/01/1967")
-bibloteca1.ingresar_usuario("Daniel Leso", "Av.Corrientes 1234", 1536690754, "dani@correo.com.ar", "10/05/1988")
+    def aceptar_devolucion(self, libro):
+        if libro not in self.prestamos:
+            print(f'El libro "{libro}" no está prestado.')
+            return
+        usuario_id = self.prestamos.pop(libro)
+        self.libros_disponibles.append(libro)
+        print(f'Libro "{libro}" devuelto por usuario "{self.usuarios[usuario_id]}".')
+"""
 
-bibloteca1.libros_disponibles.extend([libro1, libro2])
+# Ejemplo de uso
+bibloteca = Bibloteca('Bibloteca Central', 'Calle Falsa 123', '123-4567', 'info@biblioteca.com', 'Lun-Vie 9:00-18:00')
+libro1 = Libro ("El señor de los anillos", "D&D", "1969", "Una guerra épica por el Anillo del Poder")
 
-bibloteca1.solicitar_libro("Juan Perez","El señor de los anillos")
+bibloteca.agregar_libro("El señor de los anillos", "D&D", "1969", "Pelar por el Anillo del Poder")
+bibloteca.agregar_libro("Teoria de La Estetica del Arte", "Alianza", "1969", "Libro de la Estetica del Arte")
+
+bibloteca.ingresar_usuario("Matias Alessandrello", "Av.Libertad 1234", 1536690663, "mati@correo.com.ar", "31/01/1967")
 
